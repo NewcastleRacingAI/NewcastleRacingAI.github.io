@@ -132,6 +132,7 @@
       <div class="carousel-controls">
         <button id="prev" type="button" aria-label="Previous image">Previous</button>
         <button id="next" type="button" aria-label="Next image">Next</button>
+        <button id="toggle-autoplay" type="button" aria-pressed="true" aria-label="Pause automatic slide rotation">Pause</button>
       </div>
     </section>
   </main>
@@ -148,16 +149,55 @@
   <script>
     const slides = document.getElementById('slides');
     const slideCount = slides.children.length;
+    const autoplayButton = document.getElementById('toggle-autoplay');
     let currentSlide = 0;
+    let autoPlayTimer;
+    let isAutoPlaying = true;
 
     function showSlide(index) {
       currentSlide = (index + slideCount) % slideCount;
       slides.style.transform = `translateX(-${currentSlide * 100}%)`;
     }
 
-    document.getElementById('prev').addEventListener('click', () => showSlide(currentSlide - 1));
-    document.getElementById('next').addEventListener('click', () => showSlide(currentSlide + 1));
-    setInterval(() => showSlide(currentSlide + 1), 5000);
+    function startAutoPlay() {
+      autoPlayTimer = setInterval(() => showSlide(currentSlide + 1), 5000);
+      isAutoPlaying = true;
+      autoplayButton.textContent = 'Pause';
+      autoplayButton.setAttribute('aria-pressed', 'true');
+      autoplayButton.setAttribute('aria-label', 'Pause automatic slide rotation');
+    }
+
+    function stopAutoPlay() {
+      clearInterval(autoPlayTimer);
+      isAutoPlaying = false;
+      autoplayButton.textContent = 'Play';
+      autoplayButton.setAttribute('aria-pressed', 'false');
+      autoplayButton.setAttribute('aria-label', 'Resume automatic slide rotation');
+    }
+
+    document.getElementById('prev').addEventListener('click', () => {
+      showSlide(currentSlide - 1);
+      if (isAutoPlaying) {
+        stopAutoPlay();
+      }
+    });
+
+    document.getElementById('next').addEventListener('click', () => {
+      showSlide(currentSlide + 1);
+      if (isAutoPlaying) {
+        stopAutoPlay();
+      }
+    });
+
+    autoplayButton.addEventListener('click', () => {
+      if (isAutoPlaying) {
+        stopAutoPlay();
+      } else {
+        startAutoPlay();
+      }
+    });
+
+    startAutoPlay();
   </script>
 </body>
 </html>
