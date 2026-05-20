@@ -152,6 +152,7 @@
     const autoplayButton = document.getElementById('toggle-autoplay');
     let currentSlide = 0;
     let autoPlayTimer;
+    let autoResumeTimer;
     let isAutoPlaying = true;
 
     function showSlide(index) {
@@ -160,6 +161,7 @@
     }
 
     function startAutoPlay() {
+      clearTimeout(autoResumeTimer);
       autoPlayTimer = setInterval(() => showSlide(currentSlide + 1), 5000);
       isAutoPlaying = true;
       autoplayButton.textContent = 'Pause';
@@ -175,10 +177,20 @@
       autoplayButton.setAttribute('aria-label', 'Resume automatic slide rotation');
     }
 
+    function scheduleAutoResume() {
+      clearTimeout(autoResumeTimer);
+      autoResumeTimer = setTimeout(() => {
+        if (!isAutoPlaying) {
+          startAutoPlay();
+        }
+      }, 10000);
+    }
+
     document.getElementById('prev').addEventListener('click', () => {
       showSlide(currentSlide - 1);
       if (isAutoPlaying) {
         stopAutoPlay();
+        scheduleAutoResume();
       }
     });
 
@@ -186,6 +198,7 @@
       showSlide(currentSlide + 1);
       if (isAutoPlaying) {
         stopAutoPlay();
+        scheduleAutoResume();
       }
     });
 
