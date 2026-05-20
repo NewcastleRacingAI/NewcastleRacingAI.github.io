@@ -151,7 +151,7 @@
     const slideCount = slides.children.length;
     const autoplayButton = document.getElementById('toggle-autoplay');
     let currentSlide = 0;
-    let autoPlayTimer;
+    let autoPlayTimer = null;
     let autoResumeTimer;
     let isAutoPlaying = true;
 
@@ -186,20 +186,20 @@
       }, 10000);
     }
 
-    document.getElementById('prev').addEventListener('click', () => {
-      showSlide(currentSlide - 1);
+    function handleManualNavigation(nextIndex) {
+      showSlide(nextIndex);
       if (isAutoPlaying) {
         stopAutoPlay();
         scheduleAutoResume();
       }
+    }
+
+    document.getElementById('prev').addEventListener('click', () => {
+      handleManualNavigation(currentSlide - 1);
     });
 
     document.getElementById('next').addEventListener('click', () => {
-      showSlide(currentSlide + 1);
-      if (isAutoPlaying) {
-        stopAutoPlay();
-        scheduleAutoResume();
-      }
+      handleManualNavigation(currentSlide + 1);
     });
 
     autoplayButton.addEventListener('click', () => {
