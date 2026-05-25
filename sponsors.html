@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}} — Newcastle Racing AI</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f5f7fa;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    main,
+    footer {
+      width: min(960px, 92%);
+      margin: 0 auto;
+    }
+
+    .hero-bg {
+      width: 100%;
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          #dde3ea,
+          #dde3ea 12px,
+          #eaeff4 12px,
+          #eaeff4 24px
+        );
+    }
+
+    header {
+      width: min(960px, 92%);
+      margin: 0 auto;
+      text-align: left;
+      padding: 4rem 0 2rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+
+    .lead {
+      max-width: 700px;
+      margin: 1rem 0 0;
+      color: #374151;
+    }
+
+    section {
+      margin: 2rem 0;
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .carousel {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .slide {
+      min-width: 100%;
+      text-align: center;
+      margin: 0;
+    }
+
+    .slide img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .slide figcaption {
+      margin-top: 0.75rem;
+      font-size: 0.95rem;
+      color: #4b5563;
+    }
+
+    /* Carousel control buttons: square, semi-transparent gray, flush to edges */
+    .carousel-controls {
+      position: absolute;
+      top: 47%;
+      left: 0;
+      right: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .carousel-controls button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 45px;
+      height: 65px;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      background: rgba(75,85,99,0.55);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      cursor: pointer;
+      pointer-events: auto;
+      z-index: 10;
+      backdrop-filter: blur(2px);
+      transition: background 0.15s ease;
+    }
+
+    /* flush to the very edges: no buffer */
+    .carousel-controls button#prev { left: 0; margin-left: 0; }
+    .carousel-controls button#next { right: 0; margin-right: 0; }
+
+    .carousel-controls button#prev:hover,
+    .carousel-controls button#next:hover {
+      background: rgba(55,65,81,0.7);
+    }
+
+    /* Autoplay control: square, top-left corner inside carousel */
+    .carousel #toggle-autoplay {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      transform: translate(0, 0);
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 0;
+      font-size: 0.9rem;
+      background: rgba(31,41,55,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      z-index: 20;
+    }
+
+    /* Navbar Styles */
+    nav {
+      position: sticky;
+      top: 0;
+      /* Diagonal gradient from top-left to bottom-right */
+      background: linear-gradient(135deg, #003a65 0%, #0073bce6 100%);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+      z-index: 1000;
+      padding: 0.75rem 2rem;
+    }
+
+    .navbar-container {
+      /* match page content width so navbar lines up with page divs */
+      width: min(960px, 92%);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 80px;
+    }
+
+    .navbar-logos {
+      display: flex;
+      align-items: center;
+      gap: 1rem; /* increased spacing between logos */
+      justify-content: flex-start;
+      /* keep logos at left inside the page-aligned container */
+      margin-right: 1rem;
+      padding-left: 0.25rem;
+    }
+/* red: #D91A35, blue: #003a65, other blue: #0073bce6*/
+
+    .logo-square {
+      width: 70px;
+      height: 70px;
+      background: rgba(255,255,255,0.14);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #ffffff;
+      font-weight: bold;
+      margin-left: 0.5rem; /* add extra space from the wide logo */
+    }
+
+    .logo-wide {
+      width: 220px;
+      height: 100px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    .navbar-menu {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      /* occupy remaining space and distribute items evenly */
+      flex: 1 1 auto;
+      justify-content: space-evenly;
+    }
+
+    .navbar-menu > .navbar-item {
+      flex: 0 0 auto;
+    }
+
+    .logo-wide img { display: block; max-height: 64px; width: auto; }
+    .logo-square img { display: block; max-height: 56px; width: auto; }
+
+    .navbar-item {
+      position: relative;
+    }
+
+    .navbar-link {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem;
+      transition: color 0.2s ease, opacity 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .navbar-link:hover {
+      color: rgba(255,255,255,0.95);
+      opacity: 0.95;
+    }
+
+    .dropdown-toggle::after {
+      content: '▼';
+      font-size: 0.6rem;
+      transition: transform 0.3s ease;
+    }
+
+    .navbar-item.active .dropdown-toggle::after {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+      min-width: 200px;
+      list-style: none;
+      margin: 0.5rem 0 0;
+      padding: 0.5rem 0;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+
+    .navbar-item.active .dropdown-menu {
+      max-height: 300px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .dropdown-item {
+      color: #1f2937;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      display: block;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+      background: #f3f4f6;
+      color: #0f172a;
+    }
+
+    body {
+      padding-top: 0;
+    }
+
+    header {
+      padding-top: 2rem;
+    }
+
+    footer {
+      padding: 2rem 0 3rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="navbar-container">
+      <div class="navbar-logos">
+        <img class="logo-wide" src="assets/ncuvision__ncu_logo.svg"></img>
+        <img class="logo-square" src="assets/Logo.png" height="70" width="70"></img>
+      </div>
+      <ul class="navbar-menu">
+        <li class="navbar-item">
+          <a href="index.html" class="navbar-link">Home</a>
+        </li>
+        <li class="navbar-item">
+          <a href="team.html" class="navbar-link">Meet the Team</a>
+        </li>
+        <li class="navbar-item">
+          <a href="sponsors.html" class="navbar-link">Sponsors</a>
+        </li>
+        <li class="navbar-item">
+          <a href="work.html" class="navbar-link">Our Work</a>
+        </li>
+        <li class="navbar-item">
+          <a href="contact.html" class="navbar-link">Contact Us</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="hero-bg">
+    <header>
+      <h1>{{HERO_HEADING}}</h1>
+      <p class="lead">{{HERO_LEAD}}</p>
+    </header>
+  </div>
+
+  <main>
+    <!-- {{PAGE_CONTENT}} — replace this comment with one or more <section> elements -->
+
+    <!--
+    Example plain section:
+
+    <section aria-labelledby="example">
+      <h2 id="example">Section Title</h2>
+      <p>Section body text.</p>
+    </section>
+
+    Example carousel section (requires the carousel JS block below):
+
+    <section aria-labelledby="gallery">
+      <h2 id="gallery">Image Gallery</h2>
+      <div class="carousel" aria-label="{{CAROUSEL_LABEL}}">
+        <button id="toggle-autoplay" type="button" aria-pressed="true" aria-label="Pause automatic slide rotation"></button>
+        <div class="slides" id="slides">
+          <figure class="slide">
+            <img src="{{IMAGE_SRC}}" alt="{{IMAGE_ALT}}">
+            <figcaption>{{CAPTION}}</figcaption>
+          </figure>
+        </div>
+        <div class="carousel-controls">
+          <button id="prev" type="button" aria-label="Previous image">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M15 6 L9 12 L15 18 Z" fill="currentColor" />
+            </svg>
+          </button>
+          <button id="next" type="button" aria-label="Next image">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M9 6 L15 12 L9 18 Z" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+    -->
+  </main>
+
+  <footer id="contact" aria-labelledby="contact-title">
+    <section>
+      <h2 id="contact-title">Contact</h2>
+      <p>Email: contact@newcastleracingai.example</p>
+      <p>Phone: +1 (555) 010-2026</p>
+      <p>Address: 100 Speedway Avenue, Newcastle</p>
+    </section>
+  </footer>
+
+  <script>
+    // Carousel — only runs when a #slides element is present on this page
+    const slidesEl = document.getElementById('slides');
+    if (slidesEl) {
+      const slideCount = slidesEl.children.length;
+      const autoplayButton = document.getElementById('toggle-autoplay');
+      let currentSlide = 0;
+      let autoPlayTimer = null;
+      let autoResumeTimer = null;
+      let isAutoPlaying = true;
+
+      function showSlide(index) {
+        currentSlide = (index + slideCount) % slideCount;
+        slidesEl.style.transform = `translateX(-${currentSlide * 100}%)`;
+      }
+
+      const playIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 5v14l11-7z" fill="white"/></svg>';
+      const pauseIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="6" y="5" width="4" height="14" fill="white"/><rect x="14" y="5" width="4" height="14" fill="white"/></svg>';
+
+      function startAutoPlay() {
+        clearTimeout(autoResumeTimer);
+        autoPlayTimer = setInterval(() => showSlide(currentSlide + 1), 5000);
+        isAutoPlaying = true;
+        if (autoplayButton) {
+          autoplayButton.innerHTML = pauseIcon;
+          autoplayButton.setAttribute('aria-pressed', 'true');
+          autoplayButton.setAttribute('aria-label', 'Pause automatic slide rotation');
+        }
+      }
+
+      function stopAutoPlay() {
+        clearInterval(autoPlayTimer);
+        isAutoPlaying = false;
+        if (autoplayButton) {
+          autoplayButton.innerHTML = playIcon;
+          autoplayButton.setAttribute('aria-pressed', 'false');
+          autoplayButton.setAttribute('aria-label', 'Resume automatic slide rotation');
+        }
+      }
+
+      function scheduleAutoResume() {
+        clearTimeout(autoResumeTimer);
+        autoResumeTimer = setTimeout(() => {
+          if (!isAutoPlaying) startAutoPlay();
+        }, 10000);
+      }
+
+      function handleManualNavigation(nextIndex) {
+        showSlide(nextIndex);
+        if (isAutoPlaying) {
+          stopAutoPlay();
+          scheduleAutoResume();
+        }
+      }
+
+      document.getElementById('prev').addEventListener('click', () => handleManualNavigation(currentSlide - 1));
+      document.getElementById('next').addEventListener('click', () => handleManualNavigation(currentSlide + 1));
+
+      if (autoplayButton) {
+        autoplayButton.addEventListener('click', () => {
+          if (isAutoPlaying) stopAutoPlay();
+          else startAutoPlay();
+        });
+      }
+
+      startAutoPlay();
+    }
+
+    // Navbar dropdown functionality
+    const navbarItems = document.querySelectorAll('.navbar-item');
+
+    navbarItems.forEach(item => {
+      const link = item.querySelector('.navbar-link');
+      if (link && link.classList.contains('dropdown-toggle')) {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          navbarItems.forEach(otherItem => {
+            if (otherItem !== item) otherItem.classList.remove('active');
+          });
+          item.classList.toggle('active');
+        });
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.navbar-item')) {
+        navbarItems.forEach(item => item.classList.remove('active'));
+      }
+    });
+  </script>
+</body>
+</html>
